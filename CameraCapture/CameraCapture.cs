@@ -36,7 +36,7 @@ namespace CameraCapture
       private int _valMax;
       private int _valMin;
 
-
+      private Point _collisionPoint;
       private Point _frameTopLeft;
 
       private Point _frameTopRight;
@@ -102,11 +102,69 @@ namespace CameraCapture
           Application.Idle += new EventHandler(ProcessFrame);
       }
 
-      private void calibrateCornerPoints()
+      public void calibrateCornerPoints()
       {
 
+          List<Rectangle> rects = new List<Rectangle>();
+          int index = new int();
+          using (MemStorage store = new MemStorage())
+              for (Contour<Point> contours1 = _dst.FindContours(Emgu.CV.CvEnum.CHAIN_APPROX_METHOD.CV_CHAIN_APPROX_NONE, Emgu.CV.CvEnum.RETR_TYPE.CV_RETR_TREE, store); contours1 != null; contours1 = contours1.HNext)
+              {
+                  Rectangle newRect = CvInvoke.cvBoundingRect(contours1, 1);
+                  if (newRect.Size.Height > 6 && newRect.Size.Width > 6)
+                  {
+
+                      rects.Add(newRect);
+                  
+                  }
+              }
+          List<Rectangle> biggestRects = new List<Rectangle>();
+
+          Rectangle biggest = new Rectangle();
+          Rectangle current = new Rectangle();
+          while (biggestRects.Count < 4)
+          {
+              for (int i = 0; i < rects.Count; i++)
+              {
+                  current = rects[i];
+                  if (biggest.Size.Height * biggest.Size.Width < current.Size.Height * current.Size.Width)
+                  {
+                      biggest = current;
+                      index = i;
+                  }
+              }
+
+              biggestRects.Add(biggest);
+              rects.RemoveAt(index);
+              biggest = new Rectangle();
+
+          }
+          biggest = new Rectangle();
+
+          List<Rectangle> positions = new List<Rectangle>();
+          while (positions.Count < 4)
+          {
+              for (int i = 0; i < biggestRects.Count; i++)
+              {
+                  current = biggestRects[i];
+
+                  if (current.X * current.Y > biggest.X * biggest.Y)
+                  {
+                      biggest = current;
+                      index = i;
 
 
+                  }
+              }
+              positions.Add(biggest);
+              biggestRects.RemoveAt(index);
+              biggest = new Rectangle();
+
+          }
+          _frameBottomRight = positions[0].Location;
+          _frameTopRight = positions[1].Location;
+          _frameBottomLeft = positions[2].Location;
+          _frameTopLeft = positions[3].Location;
 
       }
 
@@ -237,6 +295,10 @@ namespace CameraCapture
               }
 
 
+          dst2 = _dst;
+
+       //   calibrateCornerPoints();
+
 
           if (_rect.Height > 6 || _rect.Width>6 || _rect.Location.X !=0)
           {
@@ -251,11 +313,12 @@ namespace CameraCapture
               _centerPoint = centerPoint;
               _pointArray.Add(centerPoint);
               _sizeArray.Add(_rect.Size);
-              _dst.Draw(_rect, new Gray(250.0), 1);
+              dst2.Draw(_rect, new Gray(250.0), 1);
 
           }
           if (_pointArray.Count > 50)
           {
+              
              // return;
               _pointArray = new List<Point>();
               _sizeArray = new List<Size>();
@@ -300,15 +363,29 @@ namespace CameraCapture
           for (int i = 0; i < _sizeArray.Count; i++)
           {
               Rectangle rect = new Rectangle(_pointArray[i], new Size(2, 2));
-              _dst.Draw(rect, new Gray(100.0), 1);
+              dst2.Draw(rect, new Gray(100.0), 1);
           }
+
+
+
+          Rectangle rect1 = new Rectangle(_frameTopLeft, new Size(25, 25));
+          dst2.Draw(rect1, new Gray(210), 1);
+
+         rect1 = new Rectangle(_frameTopRight, new Size(25, 25));
+          dst2.Draw(rect1, new Gray(210), 1);
+
+          rect1 = new Rectangle(_frameBottomLeft, new Size(25, 25));
+          dst2.Draw(rect1, new Gray(210), 1);
+
+           rect1 = new Rectangle(_frameBottomRight, new Size(25, 25));
+          dst2.Draw(rect1, new Gray(210), 1);
 
 
          // Image<Gray, Byte> smoothedGrayFrame = dst2.PyrUp();
         //  Image<Gray, Byte> cannyFrame = dst.Canny(new Gray(100), new Gray(60));
-          captureImageBox.Image = _dst;
+          captureImageBox.Image = dst2;
 
-          checkPoints();
+          checkPoints(dst2);
          
          
 
@@ -319,7 +396,7 @@ namespace CameraCapture
 
       }
 
-      private void checkPoints()
+      private void checkPoints(Image<Gray, Byte> dst2)
       {
         
          // int arraySize = _pointArray.Length;
@@ -344,26 +421,29 @@ namespace CameraCapture
         second,
         third);
 
-              if (second.X > first.X && second.X > third.X)
+              if (second.X > first.X && second.X > third.X && second.Y+50 > third.Y && second.Y - 50 < third.Y)
               {
 
-                  Point collision = second;
+                  _collisionPoint = second;
 
 
-                  Point indicator = collision;
-                  indicator.X = indicator.X - 10;
-                  indicator.Y = indicator.Y - 10;
-                  Rectangle rect = new Rectangle(indicator, new Size(20, 20));
-                  _dst.Draw(rect, new Gray(230.0), 1);
 
                   System.Console.WriteLine("Collision at ");
-                  System.Console.WriteLine(collision);
+                  System.Console.WriteLine(_collisionPoint);
 
 
               }
 
+              if (_collisionPoint.X>0)
+              {
 
+                  Point indicator = _collisionPoint;
+                  indicator.X = indicator.X - 10;
+                  indicator.Y = indicator.Y - 10;
 
+                  Rectangle rect = new Rectangle(indicator, new Size(20, 20));
+                  dst2.Draw(rect, new Gray(230.0), 1);
+              }
 
 
           }
@@ -473,6 +553,23 @@ namespace CameraCapture
           MessageBox.Show(values);
       }
 
+
+      private void sendClickFromCollision()
+      {
+          Point click = translateCollision();
+
+
+
+      }
+
+      private Point translateCollision()
+      {
+          Point click = _collisionPoint;
+
+
+          return click;
+      }
+
       private void plusHueMaxClick(object sender, EventArgs e)
       {
           _hueMax += 1;
@@ -491,7 +588,6 @@ namespace CameraCapture
       private void minusHueMinClick(object sender, EventArgs e)
       {
           _hueMin -= 1;
-          updateFrame();
       }
 
 
