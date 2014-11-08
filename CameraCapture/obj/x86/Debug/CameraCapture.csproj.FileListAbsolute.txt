@@ -1,0 +1,12 @@
+C:\Emgu\emgucv-windows-x86 2.2.1.1150\Emgu.CV.Example\CameraCapture\bin\x86\Debug\Example.CameraCapture.exe
+C:\Emgu\emgucv-windows-x86 2.2.1.1150\Emgu.CV.Example\CameraCapture\bin\x86\Debug\Example.CameraCapture.pdb
+C:\Emgu\emgucv-windows-x86 2.2.1.1150\Emgu.CV.Example\CameraCapture\bin\x86\Debug\Emgu.CV.dll
+C:\Emgu\emgucv-windows-x86 2.2.1.1150\Emgu.CV.Example\CameraCapture\bin\x86\Debug\Emgu.CV.UI.dll
+C:\Emgu\emgucv-windows-x86 2.2.1.1150\Emgu.CV.Example\CameraCapture\bin\x86\Debug\Emgu.Util.dll
+C:\Emgu\emgucv-windows-x86 2.2.1.1150\Emgu.CV.Example\CameraCapture\bin\x86\Debug\ZedGraph.dll
+C:\Emgu\emgucv-windows-x86 2.2.1.1150\Emgu.CV.Example\CameraCapture\obj\x86\Debug\ResolveAssemblyReference.cache
+C:\Emgu\emgucv-windows-x86 2.2.1.1150\Emgu.CV.Example\CameraCapture\obj\x86\Debug\CameraCapture.CameraCapture.resources
+C:\Emgu\emgucv-windows-x86 2.2.1.1150\Emgu.CV.Example\CameraCapture\obj\x86\Debug\ResGen.read.1.tlog
+C:\Emgu\emgucv-windows-x86 2.2.1.1150\Emgu.CV.Example\CameraCapture\obj\x86\Debug\ResGen.write.1.tlog
+C:\Emgu\emgucv-windows-x86 2.2.1.1150\Emgu.CV.Example\CameraCapture\obj\x86\Debug\Example.CameraCapture.exe
+C:\Emgu\emgucv-windows-x86 2.2.1.1150\Emgu.CV.Example\CameraCapture\obj\x86\Debug\Example.CameraCapture.pdb
