@@ -99,6 +99,7 @@
       <DependentUpon>CameraCapture.cs</DependentUpon>
     </Compile>
     <Compile Include="..\..\CommonAssemblyInfo.cs" />
+    <Compile Include="DPoint.cs" />
     <Compile Include="Form1.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -118,6 +119,7 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
+    <Compile Include="Solver.cs" />
     <EmbeddedResource Include="CameraCapture.resx">
       <SubType>Designer</SubType>
       <DependentUpon>CameraCapture.cs</DependentUpon>
