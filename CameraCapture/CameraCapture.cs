@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
 using System.Drawing;
+using System.Drawing.Drawing2D;
 using System.Text;
 using System.Windows.Forms;
 using Emgu.CV;
@@ -331,7 +332,7 @@ namespace CameraCapture
                   {
                       _rect = newRect;
 
-                    
+
 
                   }
               }
@@ -464,6 +465,20 @@ namespace CameraCapture
 
         //          System.Console.WriteLine("Collision at ");
           //        System.Console.WriteLine(_collisionPoint);
+
+                  Point[] myArray =
+                     {
+                         _frameTopLeft,
+                         _frameTopRight,
+                         _frameBottomRight,
+                         _frameBottomLeft
+                     };
+
+                  // Create a GraphicsPath object and add a polygon.
+                  GraphicsPath myPath = new GraphicsPath();
+                  myPath.AddPolygon(myArray);
+                  Region region = new Region(myPath);
+                  bool isInside = region.IsVisible(_collisionPoint);
 
                   Solver solver = new Solver();
                   DPoint l1 = new DPoint(_frameTopLeft.X, _frameTopLeft.Y);
