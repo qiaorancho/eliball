@@ -103,20 +103,24 @@ namespace CameraCapture
 
       public void calibrateCornerPoints()
       {
-
+          Console.WriteLine("Starting Calibration");
           List<Rectangle> rects = new List<Rectangle>();
           int index = new int();
           using (MemStorage store = new MemStorage())
               for (Contour<Point> contours1 = _dst.FindContours(Emgu.CV.CvEnum.CHAIN_APPROX_METHOD.CV_CHAIN_APPROX_NONE, Emgu.CV.CvEnum.RETR_TYPE.CV_RETR_TREE, store); contours1 != null; contours1 = contours1.HNext)
               {
                   Rectangle newRect = CvInvoke.cvBoundingRect(contours1, 1);
-                  if (newRect.Size.Height > 6 && newRect.Size.Width > 6)
+                  if (newRect.Size.Height > 4 && newRect.Size.Width > 4)
                   {
 
                       rects.Add(newRect);
+
+                      Console.WriteLine(newRect);
                   
                   }
               }
+
+          Console.WriteLine("Done adding rects");
           List<Rectangle> biggestRects = new List<Rectangle>();
 
           Rectangle biggest = new Rectangle();
@@ -134,6 +138,8 @@ namespace CameraCapture
               }
 
               biggestRects.Add(biggest);
+
+              Console.WriteLine(biggest);
               if (rects.Count-1 >= index)
               {
               rects.RemoveAt(index);
@@ -141,7 +147,6 @@ namespace CameraCapture
               biggest = new Rectangle();
 
           }
-
 
           List<Rectangle> positions = new List<Rectangle>();
           while (positions.Count < 4)
@@ -157,8 +162,12 @@ namespace CameraCapture
                       index = i;
 
                   }
+
               }
+
               positions.Add(biggest);
+
+              Console.WriteLine(biggest);
               biggestRects.RemoveAt(index);
               biggest = new Rectangle();
 
@@ -167,6 +176,14 @@ namespace CameraCapture
           _frameTopRight = positions[1].Location;
           _frameBottomLeft = positions[2].Location;
           _frameTopLeft = positions[3].Location;
+
+          Console.WriteLine("Calibration complete");
+          Console.WriteLine("Bottom Right {0}. TopRight: {1}. BottomLeft {2}. TopLeft {3}", // <-- This is called a format string.
+    _frameBottomRight,                        // <-- These are substitutions.
+    _frameTopRight,
+    _frameBottomLeft,
+    _frameTopLeft);
+
 
       }
 
@@ -308,7 +325,7 @@ namespace CameraCapture
               centerPoint.X = Convert.ToInt32(_rect.Location.X + _rect.Width / 2); //calculate mid point x
               centerPoint.Y = Convert.ToInt32(_rect.Location.Y + _rect.Height / 2); //calculate mid point y
 
-              System.Console.WriteLine(centerPoint);
+             // System.Console.WriteLine(centerPoint);
 
 
 
@@ -370,16 +387,16 @@ namespace CameraCapture
 
 
 
-          Rectangle rect1 = new Rectangle(_frameTopLeft, new Size(25, 25));
+          Rectangle rect1 = new Rectangle(_frameTopLeft, new Size(5, 5));
           dst2.Draw(rect1, new Gray(210), 1);
 
-         rect1 = new Rectangle(_frameTopRight, new Size(25, 25));
+         rect1 = new Rectangle(_frameTopRight, new Size(5, 5));
           dst2.Draw(rect1, new Gray(210), 1);
 
-          rect1 = new Rectangle(_frameBottomLeft, new Size(25, 25));
+          rect1 = new Rectangle(_frameBottomLeft, new Size(5, 5));
           dst2.Draw(rect1, new Gray(210), 1);
 
-           rect1 = new Rectangle(_frameBottomRight, new Size(25, 25));
+           rect1 = new Rectangle(_frameBottomRight, new Size(5, 5));
           dst2.Draw(rect1, new Gray(210), 1);
 
 
@@ -418,11 +435,11 @@ namespace CameraCapture
 
               Point third = _pointArray[_pointArray.Count - 1];
 
-              Console.WriteLine("First {0}. Second: {1}. Third {2}.", // <-- This is called a format string.
+        /*      Console.WriteLine("First {0}. Second: {1}. Third {2}.", // <-- This is called a format string.
         first,                        // <-- These are substitutions.
         second,
         third);
-
+              */
               if (second.X > first.X && second.X > third.X && second.Y+50 > third.Y && second.Y - 50 < third.Y)
               {
 
@@ -430,8 +447,8 @@ namespace CameraCapture
 
 
 
-                  System.Console.WriteLine("Collision at ");
-                  System.Console.WriteLine(_collisionPoint);
+        //          System.Console.WriteLine("Collision at ");
+          //        System.Console.WriteLine(_collisionPoint);
 
 
               }

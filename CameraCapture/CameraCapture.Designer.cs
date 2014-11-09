@@ -302,7 +302,7 @@ namespace CameraCapture
             // 
             // splitContainer2.Panel1
             // 
-            this.splitContainer2.Panel1.Controls.Add(this.splitContainer3);
+//            this.splitContainer2.Panel1.Controls.Add(this.splitContainer3);
             // 
             // splitContainer2.Panel2
             // 
