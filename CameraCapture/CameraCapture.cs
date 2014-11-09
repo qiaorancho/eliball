@@ -457,6 +457,16 @@ namespace CameraCapture
               {
                   _collisionPoint = second;
 
+                  Solver solver = new Solver();
+                  DPoint l1 = new DPoint(_frameTopLeft.X, _frameTopLeft.Y);
+                  DPoint l2 = new DPoint(_frameBottomLeft.X, _frameBottomLeft.Y);
+                  DPoint r1 = new DPoint(_frameTopRight.X, _frameTopRight.Y);
+                  DPoint r2 = new DPoint(_frameBottomRight.X, _frameBottomRight.Y);
+
+                  DPoint origin = new DPoint(790,564);
+                  DPoint collisionPoint = new DPoint(_collisionPoint.X, _collisionPoint.Y);
+
+                  DPoint _originPoint = solver.getOrigin(l1, l2, r1, r2, origin, collisionPoint);
         //          System.Console.WriteLine("Collision at ");
           //        System.Console.WriteLine(_collisionPoint);
 
