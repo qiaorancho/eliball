@@ -50,6 +50,10 @@ namespace CameraCapture
 
             this.plusSatMin = new System.Windows.Forms.Button();
             this.minusSatMin = new System.Windows.Forms.Button();
+
+            this.calibrateButton = new System.Windows.Forms.Button();
+
+
             this.splitContainer2 = new System.Windows.Forms.SplitContainer();
            // this.splitContainer3 = new System.Windows.Forms.SplitContainer();
             this.panel1 = new System.Windows.Forms.Panel();
@@ -97,6 +101,8 @@ namespace CameraCapture
             //this.splitContainer1.Panel1.Controls.Add(this.captureButton);
 
             this.splitContainer1.Panel1.Controls.Add(this.showValues);
+            this.splitContainer1.Panel1.Controls.Add(this.calibrateButton);
+
             this.splitContainer1.Panel1.Controls.Add(this.plusHueMax);
             this.splitContainer1.Panel1.Controls.Add(this.plusHueMin);
             this.splitContainer1.Panel1.Controls.Add(this.minusHueMax);
@@ -125,8 +131,13 @@ namespace CameraCapture
             // 
 
 
-
-
+            this.calibrateButton.Location = new System.Drawing.Point(924, 12);
+            this.calibrateButton.Name = "calibrate";
+            this.calibrateButton.Size = new System.Drawing.Size(60, 30);
+            this.calibrateButton.TabIndex = 16;
+            this.calibrateButton.Text = "calibrate";
+            this.calibrateButton.UseVisualStyleBackColor = true;
+            this.calibrateButton.Click += new System.EventHandler(this.calibrateButtonClick);
 
             this.showValues.Location = new System.Drawing.Point(860, 12);
             this.showValues.Name = "show";
@@ -291,7 +302,7 @@ namespace CameraCapture
             // 
             // splitContainer2.Panel1
             // 
-            this.splitContainer2.Panel1.Controls.Add(this.splitContainer3);
+//            this.splitContainer2.Panel1.Controls.Add(this.splitContainer3);
             // 
             // splitContainer2.Panel2
             // 
@@ -448,7 +459,7 @@ namespace CameraCapture
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(842, 832);
+            this.ClientSize = new System.Drawing.Size(1000, 832);
             this.Controls.Add(this.splitContainer1);
             this.Name = "CameraCapture";
             this.Text = "Camera Capture";
@@ -509,6 +520,9 @@ namespace CameraCapture
 
         private System.Windows.Forms.Button showValues;
 
+        private System.Windows.Forms.Button calibrateButton;
+
+
 
 
         private System.Windows.Forms.Panel panel3;
@@ -519,6 +533,7 @@ namespace CameraCapture
         private Emgu.CV.UI.ImageBox grayscaleImageBox;
         private Emgu.CV.UI.ImageBox smoothedGrayscaleImageBox;
         private Emgu.CV.UI.ImageBox cannyImageBox;
+
     }
 }
 
