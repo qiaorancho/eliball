@@ -176,9 +176,22 @@ namespace CameraCapture
               biggest = new Rectangle();
 
           }
-          _frameBottomRight = positions[0].Location;
-          _frameTopRight = positions[1].Location;
-          _frameBottomLeft = positions[2].Location;
+          Point br = new Point();
+          br.X = positions[0].Location.X + positions[0].Size.Width;
+          br.Y = positions[0].Location.Y + positions[0].Size.Height;
+          _frameBottomRight = br;
+
+
+          Point tr = new Point();
+          tr.X = positions[1].Location.X + positions[0].Size.Width;
+          tr.Y = positions[1].Location.Y;
+          _frameTopRight = tr;
+
+          Point bl = new Point();
+          bl.X = positions[2].Location.X;
+          bl.Y = positions[2].Location.Y + positions[2].Size.Height;
+          _frameBottomLeft = bl;
+
           _frameTopLeft = positions[3].Location;
 
           Console.WriteLine("Calibration complete");
@@ -397,17 +410,17 @@ namespace CameraCapture
 
 
 
-          Rectangle rect1 = new Rectangle(_frameTopLeft, new Size(10, 10));
+          Rectangle rect1 = new Rectangle(_frameTopLeft, new Size(4, 4));
           dst2.Draw(rect1, new Gray(130), 2);
 
-         rect1 = new Rectangle(_frameTopRight, new Size(10, 10));
-          dst2.Draw(rect1, new Gray(50), 3);
+         rect1 = new Rectangle(_frameTopRight, new Size(4, 4));
+          dst2.Draw(rect1, new Gray(50), 2);
 
-          rect1 = new Rectangle(_frameBottomLeft, new Size(10, 10));
-          dst2.Draw(rect1, new Gray(90), 4);
+          rect1 = new Rectangle(_frameBottomLeft, new Size(4, 4));
+          dst2.Draw(rect1, new Gray(90), 2);
 
-           rect1 = new Rectangle(_frameBottomRight, new Size(10, 10));
-          dst2.Draw(rect1, new Gray(170), 5);
+           rect1 = new Rectangle(_frameBottomRight, new Size(4, 4));
+          dst2.Draw(rect1, new Gray(170), 2);
 
 
          // Image<Gray, Byte> smoothedGrayFrame = dst2.PyrUp();

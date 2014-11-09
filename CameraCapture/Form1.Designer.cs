@@ -37,7 +37,7 @@
             this.BackgroundImage = global::CameraCapture.Properties.Resources.DuckChuckCalibrate1;
             this.ClientSize = new System.Drawing.Size(784, 562);
             this.Name = "Form1";
-            this.Text = "Form1";
+            this.Text = " > DUCK CHUCK < ";
             this.ResumeLayout(false);
 
         }
