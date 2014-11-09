@@ -25,6 +25,12 @@ namespace CameraCapture
       private List<CircleF> _collisionCircles;
       private Image<Gray, Byte> _dst;
 
+      private List<Point> _birdArray;
+      private List<Point> _deathArray;
+
+
+
+
       private bool _preCollision;
       private int _tick;
 
@@ -44,6 +50,8 @@ namespace CameraCapture
       private Point _frameBottomLeft;
 
       private Point _frameBottomRight;
+
+      private int _score;
 
       public CameraCapture()
       {
@@ -211,53 +219,6 @@ namespace CameraCapture
           //warpImage();
 }
 
-      private void captureButtonClick(object sender, EventArgs e)
-      {
-         #region if capture is not created, create it now
-         if (_capture == null)
-         {
-            try
-            {
-                Console.WriteLine("about to create new capture");
-               
-             //  _capture.ImageGrabbed += ProcessFrame;
-               Console.WriteLine("created new capture");
-
-            }
-            catch (NullReferenceException excpt)
-            {
-                Console.WriteLine(excpt.Message);
-
-               MessageBox.Show(excpt.Message);
-            }
-         }
-         #endregion
-
-         if (_capture != null)
-         {
-
-             _image = _capture.QueryFrame();
-
-
-             //  _image = _capture.RetrieveBgrFrame();
-
-             Image<Gray, Byte> grayFrame = _image.Convert<Gray, Byte>();
-
-
-          //   Image<Gray, Byte> img2 = grayFrame.Not();
-            // Image<Gray, Byte> smallGrayFrame = img2.PyrDown();
-             //Image<Gray, Byte> smoothedGrayFrame = smallGrayFrame.PyrUp();
-             //Image<Gray, Byte> cannyFrame = smoothedGrayFrame.Canny(new Gray(100), new Gray(60));
-
-             captureImageBox.Image = _image;
-          //   grayscaleImageBox.Image = grayFrame;
-            // smoothedGrayscaleImageBox.Image = smoothedGrayFrame;
-             //cannyImageBox.Image = cannyFrame;
-      
-            _captureInProgress = !_captureInProgress;
-         }
-      }
-
       private void ReleaseData()
       {
          if (_capture != null)
@@ -290,12 +251,6 @@ namespace CameraCapture
           _image = _capture.QueryFrame().Flip(Emgu.CV.CvEnum.FLIP.HORIZONTAL);
 
 
-          //	_image.Save(@"C:\Users\Andrew\Desktop\pics\MyPic.jpg");
-        // Image<Bgr, byte> resizedImage = _image.Resize(160, 120, Emgu.CV.CvEnum.INTER.CV_INTER_LINEAR);
-
-
-
-
           Image<Hsv, Byte> hsvimg = _image.Convert<Hsv, Byte>(); //hsv image
        
 
@@ -315,12 +270,7 @@ namespace CameraCapture
           StructuringElementEx element1 = new StructuringElementEx(2, 2, 1, 1, Emgu.CV.CvEnum.CV_ELEMENT_SHAPE.CV_SHAPE_ELLIPSE);
           StructuringElementEx element2 = new StructuringElementEx(2, 2, 1, 1, Emgu.CV.CvEnum.CV_ELEMENT_SHAPE.CV_SHAPE_ELLIPSE);
 
-   //     CvInvoke.cvMorphologyEx(src, dst2, IntPtr.Zero, element1, Emgu.CV.CvEnum.CV_MORPH_OP.CV_MOP_OPEN, 1);
 
-     //   CvInvoke.cvMorphologyEx(dst2, dst, IntPtr.Zero, element1, Emgu.CV.CvEnum.CV_MORPH_OP.CV_MOP_CLOSE, 1);
-
-
-       //   PointF[] pts = PointCollection.GeneratePointCloud(modelEllipse, sampleCount);
           _rect.Location = new Point(0, 0);
           _rect.Size = new Size(6, 6);
           using (MemStorage store = new MemStorage())
@@ -366,37 +316,6 @@ namespace CameraCapture
               _sizeArray = new List<Size>();
           }
 
-        /*  if (_pointArray.Count > 1)
-          {
-              for (int i = 0; _pointArray.Count - 1 > i; i++)
-              {
-                  LineSegment2D line = new LineSegment2D(_pointArray[i], _pointArray[i + 1]);
-                  if (_pointArray[i].X > _pointArray[i + 1].X)
-                  {
-                      //dst.Draw(line, new Gray(240.0), 1);
-                  }
-                  else
-                  {
-                      dst.Draw(line, new Gray(50.0), 1);
-                  }
-              }
-
-          }*/
-          //dst.ROI = _rect;
-
-          //CvInvoke.cvMorphologyEx(dst, dst2, IntPtr.Zero, element2, Emgu.CV.CvEnum.CV_MORPH_OP.CV_MOP_CLOSE, 1);
-
-        /*  if (_rect.Size.Height * _rect.Size.Width > 36 && _rect.Size.Height * _rect.Size.Width < 81)
-          { //Call it a collision
-
-              CircleF circ = new CircleF(centerPoint, 5);
-              _collisionCircles.Add(circ);
-           //   collisionDetected(dst);
-
-
-              if (_collisionCircles.Count > 500) _collisionCircles = new List<CircleF>();
-
-          }*/
           for (int i = 0; i < _collisionCircles.Count; i++)
           {
           //    dst.Draw(_collisionCircles[i], new Gray(50.0), 5);
@@ -465,6 +384,7 @@ namespace CameraCapture
         //          System.Console.WriteLine("Collision at ");
           //        System.Console.WriteLine(_collisionPoint);
 
+
                   Solver solver = new Solver();
                   DPoint l1 = new DPoint(_frameTopLeft.X, _frameTopLeft.Y);
                   DPoint l2 = new DPoint(_frameBottomLeft.X, _frameBottomLeft.Y);
@@ -475,6 +395,12 @@ namespace CameraCapture
                   DPoint collisionPoint = new DPoint(_collisionPoint.X, _collisionPoint.Y);
 
                   DPoint _originPoint = solver.getOrigin(l1, l2, r1, r2, origin, collisionPoint);
+
+                  _collisionPoint.X = (int)_originPoint.x;
+                  _collisionPoint.Y = (int)_originPoint.y;
+
+                  checkCollision();
+
               }
 
               if (_collisionPoint.X>0)
@@ -532,6 +458,57 @@ namespace CameraCapture
               "  Centerpoint"+ _centerPoint.X +","+ _centerPoint.Y;
           MessageBox.Show(values);
       }
+
+
+      private void checkCollision()
+      {
+
+          for (int i = 0; i < _birdArray.Count; i++)
+          {
+              int xMax = _birdArray[i].X + 25;
+              int xMin = _birdArray[i].X - 25;
+              int yMax = _birdArray[i].Y + 25;
+              int yMin = _birdArray[i].Y - 25;
+
+
+              bool xValid = _collisionPoint.X < xMax && _collisionPoint.X > xMin;
+              bool yValid = _collisionPoint.Y < yMax && _collisionPoint.Y > yMin;
+
+              if (xValid && yValid)
+              {
+                 //hit
+
+                  hitBird(i);
+
+
+              }
+
+
+
+          }
+
+
+      }
+
+      private void hitBird(int index)
+      {
+          scoreBird(index);
+          _deathArray.Add(_birdArray[index]);
+          _birdArray.RemoveAt(index);
+
+
+
+
+
+      }
+
+      private void scoreBird(int index)
+      {
+
+          _score = _score + 100;
+      }
+
+
 
 
       private void plusHueMaxClick(object sender, EventArgs e)
