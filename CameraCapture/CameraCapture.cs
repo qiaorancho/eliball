@@ -99,6 +99,10 @@ namespace CameraCapture
           System.Console.WriteLine(found);
 
           Application.Idle += new EventHandler(ProcessFrame);
+
+          var myForm = new Form1();
+          myForm.Show();
+
       }
 
       public void calibrateCornerPoints()
@@ -442,10 +446,7 @@ namespace CameraCapture
               */
               if (second.X > first.X && second.X > third.X && second.Y+50 > third.Y && second.Y - 50 < third.Y)
               {
-
                   _collisionPoint = second;
-
-
 
         //          System.Console.WriteLine("Collision at ");
           //        System.Console.WriteLine(_collisionPoint);
