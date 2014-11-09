@@ -157,7 +157,7 @@
     <None Include="Resources\DuckChuckBackground.png" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Resources\DuckChuckCalibrate.png" />
+    <None Include="Resources\DuckChuckCalibrate1.png" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

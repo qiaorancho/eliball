@@ -279,7 +279,10 @@ namespace CameraCapture
         // Image<Bgr, byte> resizedImage = _image.Resize(160, 120, Emgu.CV.CvEnum.INTER.CV_INTER_LINEAR);
 
 
+
+
           Image<Hsv, Byte> hsvimg = _image.Convert<Hsv, Byte>(); //hsv image
+
           Image<Gray, Byte>[] channels = hsvimg.Split(); 
           Image<Gray, Byte> imghue = channels[ 0 ];       // hue channel
           Image<Gray, Byte> imgsat = channels[ 1 ];       // saturation channel
@@ -409,6 +412,9 @@ namespace CameraCapture
           captureImageBox.Image = dst2;
 
           checkPoints(dst2);
+
+
+
          
          
 
@@ -475,6 +481,7 @@ namespace CameraCapture
       private void warpImage()
       {
           _image = _capture.QueryFrame();
+       
 
 
           Image<Hsv, Byte> hsvimg = _image.Convert<Hsv, Byte>();//hsv image

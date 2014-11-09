@@ -34,9 +34,8 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.BackgroundImage = global::CameraCapture.Properties.Resources.DuckChuckCalibrate;
-            this.ClientSize = new System.Drawing.Size(784, 598);
-            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
+            this.BackgroundImage = global::CameraCapture.Properties.Resources.DuckChuckCalibrate1;
+            this.ClientSize = new System.Drawing.Size(784, 562);
             this.Name = "Form1";
             this.Text = "Form1";
             this.ResumeLayout(false);

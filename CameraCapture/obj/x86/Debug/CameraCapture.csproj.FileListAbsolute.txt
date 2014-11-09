@@ -9,6 +9,6 @@ C:\Emgu\emgucv-windows-x86 2.2.1.1150\Emgu.CV.Example\CameraCapture\obj\x86\Debu
 C:\Emgu\emgucv-windows-x86 2.2.1.1150\Emgu.CV.Example\CameraCapture\obj\x86\Debug\Example.CameraCapture.pdb
 C:\Emgu\emgucv-windows-x86 2.2.1.1150\Emgu.CV.Example\CameraCapture\obj\x86\Debug\CameraCapture.csprojResolveAssemblyReference.cache
 C:\Emgu\emgucv-windows-x86 2.2.1.1150\Emgu.CV.Example\CameraCapture\obj\x86\Debug\CameraCapture.csproj.GenerateResource.Cache
-C:\Emgu\emgucv-windows-x86 2.2.1.1150\Emgu.CV.Example\CameraCapture\obj\x86\Debug\CameraCapture.Form1.resources
 C:\Emgu\emgucv-windows-x86 2.2.1.1150\Emgu.CV.Example\CameraCapture\obj\x86\Debug\CameraCapture.Form2.resources
 C:\Emgu\emgucv-windows-x86 2.2.1.1150\Emgu.CV.Example\CameraCapture\obj\x86\Debug\CameraCapture.Properties.Resources.resources
+C:\Emgu\emgucv-windows-x86 2.2.1.1150\Emgu.CV.Example\CameraCapture\obj\x86\Debug\CameraCapture.Form1.resources
