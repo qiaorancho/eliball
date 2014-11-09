@@ -1,0 +1,4 @@
+CameraCapture/bin/x86/Debug/*.exe
+CameraCapture/bin/x86/Debug/*.pdb
+CameraCapture/obj/*
+CameraCapture/CameraCapture.v12.suo

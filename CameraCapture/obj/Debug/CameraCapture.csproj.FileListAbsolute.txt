@@ -1,8 +1,0 @@
-C:\Emgu\emgucv-windows-x86 2.2.1.1150\bin\Example.CameraCapture.exe
-C:\Emgu\emgucv-windows-x86 2.2.1.1150\bin\Example.CameraCapture.pdb
-C:\Emgu\emgucv-windows-x86 2.2.1.1150\Emgu.CV.Example\CameraCapture\obj\Debug\ResolveAssemblyReference.cache
-C:\Emgu\emgucv-windows-x86 2.2.1.1150\Emgu.CV.Example\CameraCapture\obj\Debug\CameraCapture.CameraCapture.resources
-C:\Emgu\emgucv-windows-x86 2.2.1.1150\Emgu.CV.Example\CameraCapture\obj\Debug\ResGen.read.1.tlog
-C:\Emgu\emgucv-windows-x86 2.2.1.1150\Emgu.CV.Example\CameraCapture\obj\Debug\ResGen.write.1.tlog
-C:\Emgu\emgucv-windows-x86 2.2.1.1150\Emgu.CV.Example\CameraCapture\obj\Debug\Example.CameraCapture.exe
-C:\Emgu\emgucv-windows-x86 2.2.1.1150\Emgu.CV.Example\CameraCapture\obj\Debug\Example.CameraCapture.pdb
