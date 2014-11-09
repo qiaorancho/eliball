@@ -38,11 +38,13 @@
             this.ClientSize = new System.Drawing.Size(784, 598);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
             this.Name = "Form2";
-            this.Text = "Form2";
+            this.Text = "> DUCK CHUCK <";
+            this.Load += new System.EventHandler(this.Form2_Load_1);
             this.ResumeLayout(false);
 
         }
 
         #endregion
+
     }
 }

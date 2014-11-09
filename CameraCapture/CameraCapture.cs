@@ -30,10 +30,16 @@ namespace CameraCapture
       private List<Point> _deathArray;
 
 
+      private List<int> _birdFrame;
+      private List<int> _birdImage;
+
+
 
 
       private bool _preCollision;
       private int _tick;
+
+      private int _count;
 
 
       private int _hueMax;
@@ -54,6 +60,8 @@ namespace CameraCapture
 
       private int _score;
 
+      public Form2 _form;
+
       public CameraCapture()
       {
          InitializeComponent();
@@ -64,10 +72,25 @@ namespace CameraCapture
           _capture.SetCaptureProperty(Emgu.CV.CvEnum.CAP_PROP.CV_CAP_PROP_FRAME_HEIGHT, 480);
           _preCollision = true;
           _tick = 10;
+          _count = 0;
 
           _pointArray = new List<Point>();
           _sizeArray = new List<Size>();
           _collisionCircles = new List<CircleF>();
+
+          _birdArray = new List<Point>();
+          _deathArray = new List<Point>();
+          _birdFrame = new List<int>();
+          _birdImage = new List<int>();
+
+          int zero = 0;
+
+          _birdFrame.Add(zero);
+          _birdImage.Add(zero);
+
+          _birdArray.Add(new Point(15, 100));
+
+
 
           /* original raquet
           _hueMax = 121;
@@ -109,8 +132,11 @@ namespace CameraCapture
 
           Application.Idle += new EventHandler(ProcessFrame);
 
-          var myForm = new Form1();
-          myForm.Show();
+          _form = new Form2();
+          _form.Show();
+
+          var cal = new Form1();
+          cal.Show();
 
       }
 
@@ -212,6 +238,13 @@ namespace CameraCapture
 
 
       }
+
+
+
+     
+
+
+
 
       private void ProcessFrame(object sender, EventArgs arg)
       {
@@ -413,6 +446,8 @@ namespace CameraCapture
                   _collisionPoint.X = (int)_originPoint.x;
                   _collisionPoint.Y = (int)_originPoint.y;
 
+                  _form.hitLocation.Location = _collisionPoint;
+
                   checkCollision();
 
               }
@@ -434,6 +469,28 @@ namespace CameraCapture
 
 
       }
+       /*
+      private void normalizeCollision()
+      {
+
+          int xDeltLeft = _frameTopLeft.X - _frameBottomLeft.X;
+          int xDeltRight = _frameTopRight.X - _frameBottomRight.X;
+
+
+
+          int yDeltRight = _frameTopRight.Y - _frameBottomRight.Y;
+          int yDeltLeft = _frameTopLeft.Y - _frameBottomLeft.Y;
+
+
+          double xSlopeLeft = xDelt / (_frameTopLeft.Y - _frameBottomLeft.Y);
+
+
+          double ySlope = yDelt / 
+
+
+
+      }
+       */
 
 
       private PointF computeIntersect(LineSegment2D a, LineSegment2D b)
@@ -477,12 +534,17 @@ namespace CameraCapture
       private void checkCollision()
       {
 
+
           for (int i = 0; i < _birdArray.Count; i++)
           {
-              int xMax = _birdArray[i].X + 25;
-              int xMin = _birdArray[i].X - 25;
-              int yMax = _birdArray[i].Y + 25;
-              int yMin = _birdArray[i].Y - 25;
+              int x = _birdArray[i].X + _form.imageControl.Width / 2;
+              int y = _birdArray[i].Y + _form.imageControl.Height/2;
+              Point center = new Point(x, y);
+
+              int xMax = center.X + 25;
+              int xMin = center.X - 25;
+              int yMax = center.Y + 25;
+              int yMin = center.Y - 25;
 
 
               bool xValid = _collisionPoint.X < xMax && _collisionPoint.X > xMin;
@@ -506,6 +568,7 @@ namespace CameraCapture
 
       private void hitBird(int index)
       {
+          Console.WriteLine("HIT BIRD");
           scoreBird(index);
           _deathArray.Add(_birdArray[index]);
           _birdArray.RemoveAt(index);
@@ -588,6 +651,50 @@ namespace CameraCapture
       private void calibrateButtonClick(object sender, EventArgs e)
       {
           calibrateCornerPoints();
+      }
+
+      private void timer1_Tick(object sender, EventArgs e)
+      {
+          _count++;
+          if (_birdArray.Count > 0)
+          {
+              _birdFrame[0]++;
+
+              if (_birdFrame[0] % 3 == 0)
+              { _birdImage[0]++; }
+
+              if (_birdImage[0] == 4)
+                  _birdImage[0] = 1;
+              if (_birdImage[0] == 1)
+                  _form.image = _form.image1;
+              if (_birdImage[0] == 2)
+                  _form.image = _form.image2;
+              if (_birdImage[0] == 3)
+              { _form.image = _form.image3; }
+              // imageControl.Image.RotateFlip(RotateFlipType.RotateNoneFlipX);
+              _form.imageControl.Image = (Image)_form.image;
+              if (_birdArray[0].X < 800)
+              {
+                  Point newpoint = new Point(_birdArray[0].X + 10, _birdArray[0].Y);
+
+                  _birdArray[0] = newpoint;
+
+
+              }
+              else
+              {
+                  Point newpoint = new Point(0, _birdArray[0].Y);
+
+                  _birdArray[0] = newpoint;
+
+              }
+              _form.imageControl.Location = new Point(_birdArray[0].X, _birdArray[0].Y);
+
+
+              //i = i + 10;
+
+          }
+
       }
 
    }
