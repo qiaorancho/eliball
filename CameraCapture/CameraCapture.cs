@@ -225,9 +225,11 @@ namespace CameraCapture
 
              _image = _capture.QueryFrame();
 
+
              //  _image = _capture.RetrieveBgrFrame();
 
              Image<Gray, Byte> grayFrame = _image.Convert<Gray, Byte>();
+
 
           //   Image<Gray, Byte> img2 = grayFrame.Not();
             // Image<Gray, Byte> smallGrayFrame = img2.PyrDown();
@@ -271,8 +273,8 @@ namespace CameraCapture
                   _tick = 10;
               }
           }
-
-          _image = _capture.QueryFrame();
+          
+          _image = _capture.QueryFrame().Flip(Emgu.CV.CvEnum.FLIP.HORIZONTAL);
 
 
           //	_image.Save(@"C:\Users\Andrew\Desktop\pics\MyPic.jpg");
@@ -282,6 +284,7 @@ namespace CameraCapture
 
 
           Image<Hsv, Byte> hsvimg = _image.Convert<Hsv, Byte>(); //hsv image
+       
 
           Image<Gray, Byte>[] channels = hsvimg.Split(); 
           Image<Gray, Byte> imghue = channels[ 0 ];       // hue channel
@@ -394,17 +397,17 @@ namespace CameraCapture
 
 
 
-          Rectangle rect1 = new Rectangle(_frameTopLeft, new Size(5, 5));
-          dst2.Draw(rect1, new Gray(210), 1);
+          Rectangle rect1 = new Rectangle(_frameTopLeft, new Size(10, 10));
+          dst2.Draw(rect1, new Gray(130), 2);
 
-         rect1 = new Rectangle(_frameTopRight, new Size(5, 5));
-          dst2.Draw(rect1, new Gray(210), 1);
+         rect1 = new Rectangle(_frameTopRight, new Size(10, 10));
+          dst2.Draw(rect1, new Gray(50), 3);
 
-          rect1 = new Rectangle(_frameBottomLeft, new Size(5, 5));
-          dst2.Draw(rect1, new Gray(210), 1);
+          rect1 = new Rectangle(_frameBottomLeft, new Size(10, 10));
+          dst2.Draw(rect1, new Gray(90), 4);
 
-           rect1 = new Rectangle(_frameBottomRight, new Size(5, 5));
-          dst2.Draw(rect1, new Gray(210), 1);
+           rect1 = new Rectangle(_frameBottomRight, new Size(10, 10));
+          dst2.Draw(rect1, new Gray(170), 5);
 
 
          // Image<Gray, Byte> smoothedGrayFrame = dst2.PyrUp();
