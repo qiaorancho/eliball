@@ -281,7 +281,7 @@ namespace CameraCapture
                   _tick = 10;
               }
           }
-          
+
           _image = _capture.QueryFrame().Flip(Emgu.CV.CvEnum.FLIP.HORIZONTAL);
 
 
@@ -378,7 +378,9 @@ namespace CameraCapture
 
          // Image<Gray, Byte> smoothedGrayFrame = dst2.PyrUp();
         //  Image<Gray, Byte> cannyFrame = dst.Canny(new Gray(100), new Gray(60));
+
           captureImageBox.Image = dst2;
+
 
           checkPoints(dst2);
 
@@ -411,12 +413,26 @@ namespace CameraCapture
         second,
         third);
               */
-              if (second.X > first.X && second.X > third.X && second.Y+50 > third.Y && second.Y - 50 < third.Y)
+              if (second.X < first.X && second.X < third.X)
               {
                   _collisionPoint = second;
 
+
+                      Point indicator = _collisionPoint;
+                      indicator.X = indicator.X - 10;
+                      indicator.Y = indicator.Y - 10;
+
+                      _form.hitLocation.Location = _collisionPoint;
+
+
+
+                 
+
+
+
+
         //          System.Console.WriteLine("Collision at ");
-          //        System.Console.WriteLine(_collisionPoint);
+                System.Console.WriteLine(_collisionPoint);
 
                   Point[] myArray =
                      {
@@ -443,33 +459,22 @@ namespace CameraCapture
 
                   DPoint _originPoint = solver.getOrigin(l1, l2, r1, r2, origin, collisionPoint);
 
-                  _collisionPoint.X = (int)_originPoint.x;
-                  _collisionPoint.Y = (int)_originPoint.y;
+                //  _collisionPoint.X = (int)_originPoint.x;
+                  //_collisionPoint.Y = (int)_originPoint.y;
 
-                  _form.hitLocation.Location = _collisionPoint;
-
-                  checkCollision();
+//                  checkCollision();
 
               }
 
-              if (_collisionPoint.X>0)
-              {
-
-                  Point indicator = _collisionPoint;
-                  indicator.X = indicator.X - 10;
-                  indicator.Y = indicator.Y - 10;
-
-                  Rectangle rect = new Rectangle(indicator, new Size(20, 20));
-                  dst2.Draw(rect, new Gray(230.0), 1);
-              }
-
+              Rectangle rect432 = new Rectangle(_collisionPoint, new Size(20, 20));
+              dst2.Draw(rect432, new Gray(230.0), 1);
 
           }
 
 
 
       }
-       /*
+      
       private void normalizeCollision()
       {
 
@@ -479,18 +484,19 @@ namespace CameraCapture
 
 
           int yDeltRight = _frameTopRight.Y - _frameBottomRight.Y;
+
           int yDeltLeft = _frameTopLeft.Y - _frameBottomLeft.Y;
 
 
-          double xSlopeLeft = xDelt / (_frameTopLeft.Y - _frameBottomLeft.Y);
+          double xSlopeLeft = xDeltLeft / (_frameTopLeft.Y - _frameBottomLeft.Y);
 
 
-          double ySlope = yDelt / 
+          double ySlopeLeft = yDeltLeft / (_frameTopLeft.X - _frameBottomLeft.X);
 
 
 
       }
-       */
+       
 
 
       private PointF computeIntersect(LineSegment2D a, LineSegment2D b)
