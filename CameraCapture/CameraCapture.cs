@@ -134,11 +134,14 @@ namespace CameraCapture
               }
 
               biggestRects.Add(biggest);
+              if (rects.Count-1 >= index)
+              {
               rects.RemoveAt(index);
+              }
               biggest = new Rectangle();
 
           }
-          biggest = new Rectangle();
+
 
           List<Rectangle> positions = new List<Rectangle>();
           while (positions.Count < 4)
@@ -149,9 +152,9 @@ namespace CameraCapture
 
                   if (current.X * current.Y > biggest.X * biggest.Y)
                   {
+
                       biggest = current;
                       index = i;
-
 
                   }
               }
@@ -631,7 +634,7 @@ namespace CameraCapture
 
       private void calibrateButtonClick(object sender, EventArgs e)
       {
-       //   calibrateCornerPoints();
+          calibrateCornerPoints();
       }
 
    }
