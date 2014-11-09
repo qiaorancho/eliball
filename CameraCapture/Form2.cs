@@ -14,9 +14,11 @@ namespace CameraCapture
        public PictureBox imageControl = new PictureBox();
        public PictureBox hitLocation = new PictureBox();
        public Bitmap image;
-       public Bitmap image1 = new Bitmap("C:\\Users\\Andrew\\Downloads\\ducks\\Black1_Duck.png");
-       public Bitmap image2 = new Bitmap("C:\\Users\\Andrew\\Downloads\\ducks\\Black2_Duck.png");
-       public Bitmap image3 = new Bitmap("C:\\Users\\Andrew\\Downloads\\ducks\\Black3_Duck.png");
+       public Bitmap image1 = new Bitmap("C:\\Users\\Andrew\\Downloads\\ducks\\Red1_Duck.png");
+       public Bitmap image2 = new Bitmap("C:\\Users\\Andrew\\Downloads\\ducks\\Red2_Duck.png");
+       public Bitmap image3 = new Bitmap("C:\\Users\\Andrew\\Downloads\\ducks\\Red3_Duck.png");
+
+       public Bitmap imageDead = new Bitmap("C:\\Users\\Andrew\\Downloads\\ducks\\RedFall_Duck.png");
        public Bitmap hitImage = new Bitmap("C:\\Users\\Andrew\\Downloads\\ducks\\hit.png");
 
         public Form2()
@@ -31,7 +33,10 @@ namespace CameraCapture
 
             System.Console.WriteLine("Form 2 load");
             imageControl.Width = 67;
-            imageControl.Height = 48;
+            imageControl.Height = 56;
+
+            //
+
             imageControl.Image = (Image)image;
             //imageControl.Image.RotateFlip(RotateFlipType.RotateNoneFlipX);
             imageControl.Location = new Point(100, 100);

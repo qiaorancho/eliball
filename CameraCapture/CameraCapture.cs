@@ -460,9 +460,9 @@ namespace CameraCapture
                   DPoint _originPoint = solver.getOrigin(l1, l2, r1, r2, origin, collisionPoint);
 
                 //  _collisionPoint.X = (int)_originPoint.x;
-                  //_collisionPoint.Y = (int)_originPoint.y;
+                 // _collisionPoint.Y = (int)_originPoint.y;
 
-//                  checkCollision();
+                  checkCollision();
 
               }
 
@@ -547,14 +547,19 @@ namespace CameraCapture
               int y = _birdArray[i].Y + _form.imageControl.Height/2;
               Point center = new Point(x, y);
 
-              int xMax = center.X + 25;
-              int xMin = center.X - 25;
-              int yMax = center.Y + 25;
-              int yMin = center.Y - 25;
+              int xMax = center.X + 100;
+              int xMin = center.X - 100;
+
+              int yMax = center.Y + 100;
+              int yMin = center.Y - 100;
 
 
               bool xValid = _collisionPoint.X < xMax && _collisionPoint.X > xMin;
               bool yValid = _collisionPoint.Y < yMax && _collisionPoint.Y > yMin;
+              Console.WriteLine("Checking bird X: {0} , Y: {1}", x, y);
+              Console.WriteLine(" X? {0} . Y? {1}", xValid, yValid);
+              Console.WriteLine(" ");
+             
 
               if (xValid && yValid)
               {
@@ -568,17 +573,19 @@ namespace CameraCapture
 
 
           }
+          _collisionPoint = new Point();
 
 
       }
 
       private void hitBird(int index)
       {
-          Console.WriteLine("HIT BIRD");
+
           scoreBird(index);
           _deathArray.Add(_birdArray[index]);
           _birdArray.RemoveAt(index);
-
+          System.Media.SoundPlayer player = new System.Media.SoundPlayer(@"C:\\Users\\Andrew\\Downloads\\ducks\\Duck_Sound.wav");
+          player.Play();
 
 
 
@@ -664,9 +671,10 @@ namespace CameraCapture
           _count++;
           if (_birdArray.Count > 0)
           {
+            
               _birdFrame[0]++;
 
-              if (_birdFrame[0] % 3 == 0)
+              if (_birdFrame[0] % 2 == 0)
               { _birdImage[0]++; }
 
               if (_birdImage[0] == 4)
@@ -681,7 +689,7 @@ namespace CameraCapture
               _form.imageControl.Image = (Image)_form.image;
               if (_birdArray[0].X < 800)
               {
-                  Point newpoint = new Point(_birdArray[0].X + 10, _birdArray[0].Y);
+                  Point newpoint = new Point(_birdArray[0].X + 5, _birdArray[0].Y);
 
                   _birdArray[0] = newpoint;
 
@@ -689,15 +697,44 @@ namespace CameraCapture
               }
               else
               {
+                  Console.WriteLine("reset bird");
                   Point newpoint = new Point(0, _birdArray[0].Y);
 
                   _birdArray[0] = newpoint;
 
               }
-              _form.imageControl.Location = new Point(_birdArray[0].X, _birdArray[0].Y);
-
 
               //i = i + 10;
+
+              _form.imageControl.Location = _birdArray[0];
+          }
+          if (_deathArray.Count > 0)
+          {
+              Point pos = _deathArray[0];
+              pos.Y = pos.Y + 10;
+              _deathArray[0] = pos;
+
+
+              if (pos.Y < 400)
+              {
+
+                  _form.imageControl.Image = (Image)_form.imageDead;
+
+                  _form.imageControl.Location = pos;
+
+              }
+              else
+              {
+
+                  _deathArray.RemoveAt(0);
+
+                  _birdArray.Add(new Point(10, 120));
+         
+
+
+              }
+
+
 
           }
 
