@@ -69,7 +69,6 @@ namespace CameraCapture
           _satMin = 148;
            */
 
-
       /*     
            _hueMax = 180;
           _hueMin=0;
@@ -335,7 +334,7 @@ namespace CameraCapture
                   }
                   else
                   {
-                     // dst.Draw(line, new Gray(50.0), 1);
+                      dst.Draw(line, new Gray(50.0), 1);
                   }
               }
 
@@ -630,7 +629,10 @@ namespace CameraCapture
           _valMin -= 1;
       }
 
-
+      private void calibrateButtonClick(object sender, EventArgs e)
+      {
+       //   calibrateCornerPoints();
+      }
 
    }
 }
