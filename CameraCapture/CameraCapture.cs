@@ -430,16 +430,8 @@ namespace CameraCapture
           checkPoints(dst2);
 
 
-
-         
-         
-
       }
-      private void collisionDetected(Image<Gray,Byte>image)
-      {
 
-
-      }
 
       private void checkPoints(Image<Gray, Byte> dst2)
       {
@@ -470,16 +462,6 @@ namespace CameraCapture
               {
                   _collisionPoint = second;
 
-                  Solver solver = new Solver();
-                  DPoint l1 = new DPoint(_frameTopLeft.X, _frameTopLeft.Y);
-                  DPoint l2 = new DPoint(_frameBottomLeft.X, _frameBottomLeft.Y);
-                  DPoint r1 = new DPoint(_frameTopRight.X, _frameTopRight.Y);
-                  DPoint r2 = new DPoint(_frameBottomRight.X, _frameBottomRight.Y);
-
-                  DPoint origin = new DPoint(790,564);
-                  DPoint collisionPoint = new DPoint(_collisionPoint.X, _collisionPoint.Y);
-
-                  DPoint _originPoint = solver.getOrigin(l1, l2, r1, r2, origin, collisionPoint);
         //          System.Console.WriteLine("Collision at ");
           //        System.Console.WriteLine(_collisionPoint);
 
@@ -503,70 +485,6 @@ namespace CameraCapture
 
 
       }
-
-      private void warpImage()
-      {
-          _image = _capture.QueryFrame();
-       
-
-
-          Image<Hsv, Byte> hsvimg = _image.Convert<Hsv, Byte>();//hsv image
-          Image<Gray, Byte>[] channels = hsvimg.Split();
-          Image<Gray, Byte> imghue = channels[0];//hue channel
-          Image<Gray, Byte> imgsat = channels[1];//saturation channel
-          Image<Gray, Byte> imgval = channels[2];//value channel
-          Image<Gray, byte> huefilter = imghue.InRange(new Gray(17), new Gray(31));
-          Image<Gray, byte> satfilter = imgsat.InRange(new Gray(37), new Gray(288));
-          Image<Gray, byte> valfilter = imgval.InRange(new Gray(145), new Gray(289));
-          Image<Gray, byte> filteredimg = huefilter.And(satfilter).And(valfilter);
-
-            Image<Gray, Byte> cannyFrame = filteredimg.Canny(new Gray(25), new Gray(25));
-
-            LineSegment2D[] lines = cannyFrame.HoughLinesBinary(
-    1, //Distance resolution in pixel-related units
-    Math.PI / 90.0, //Angle resolution measured in radians.
-    70, //threshold
-    30, //min Line width
-    10 //gap between lines
-    )[0]; //Get the lines from the first channel
-
-            int len = lines.Length;
-            for (int i = 0; i < len-1; i++)
-            {
-                _image.Draw(lines[i], new Bgr(Color.Red), 5);
-            }
-
-
-            for (int i = 0; i < len - 1; i++)
-            {
-
-            }
-            List<PointF> corners = new List<PointF>();
-
-          for (int i = 0; i < len; i++)
-{
-    for (int j = i+1; j < len; j++)
-    {
-        PointF pt = computeIntersect(lines[i], lines[j]);
-        if (pt.X >= 0 && pt.Y >= 0)
-            corners.Add(pt);
-    }
-          }
-             PointF center = new PointF(0,0);
-              //for (int i = 0; i < corners.Count; i++)
-       //          center += corners[i];
-
-//center *= (1. / corners.size());
-//sortCorners(corners, center);
-
-
-
-            captureImageBox.Image = _image;
-
-
-
-}
-
 
 
       private PointF computeIntersect(LineSegment2D a, LineSegment2D b)
@@ -606,22 +524,6 @@ namespace CameraCapture
           MessageBox.Show(values);
       }
 
-
-      private void sendClickFromCollision()
-      {
-          Point click = translateCollision();
-
-
-
-      }
-
-      private Point translateCollision()
-      {
-          Point click = _collisionPoint;
-
-
-          return click;
-      }
 
       private void plusHueMaxClick(object sender, EventArgs e)
       {
