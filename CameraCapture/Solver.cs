@@ -117,21 +117,21 @@ namespace CameraCapture
             double xValue = 0;
             double yValue = 0;
 
-            double A1 = lineA2.y - lineA1.y;
-            double B1 = lineA1.x - lineA2.x;
-            double C1 = A1 * lineA1.x + B1 * lineA1.y;
+            double A1 = lineA2.y - lineA1.y; 
+            double B1 = lineA1.x - lineA2.x; 
+            double C1 = A1 * lineA1.x + B1 * lineA1.y;  
 
-            double A2 = lineB2.y - lineB1.y;
-            double B2 = lineB1.x - lineB2.x;
-            double C2 = A2 * lineB1.x + B2 * lineB1.y;
+            double A2 = lineB2.y - lineB1.y; 
+            double B2 = lineB1.x - lineB2.x; 
+            double C2 = A2 * lineB1.x + B2 * lineB1.y; 
 
             double det = A1 * B2 - A2 * B1;
             if (Math.Abs(det) < 0.001)
             {
                 det = 0.001;
             }
-            xValue = (B2 * C1 - B1 * C2) / det;
-            yValue = (A1 * C2 - A2 * C1) / det;
+            xValue = (B2 * C1 - B1 * C2) / det; 
+            yValue = (A1 * C2 - A2 * C1) / det; 
             return new DPoint(xValue, yValue);
         }
     }

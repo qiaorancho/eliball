@@ -33,6 +33,7 @@ namespace CameraCapture
       private List<int> _birdFrame;
       private List<int> _birdImage;
 
+      private bool _calibrated = false;
 
 
 
@@ -149,7 +150,7 @@ namespace CameraCapture
               for (Contour<Point> contours1 = _dst.FindContours(Emgu.CV.CvEnum.CHAIN_APPROX_METHOD.CV_CHAIN_APPROX_NONE, Emgu.CV.CvEnum.RETR_TYPE.CV_RETR_TREE, store); contours1 != null; contours1 = contours1.HNext)
               {
                   Rectangle newRect = CvInvoke.cvBoundingRect(contours1, 1);
-                  if (newRect.Size.Height > 4 && newRect.Size.Width > 4)
+                  if (newRect.Size.Height > 4 && newRect.Size.Width > 4 && newRect.X !=0 && newRect.Y !=0)
                   {
 
                       rects.Add(newRect);
@@ -229,6 +230,15 @@ namespace CameraCapture
 
           _frameTopLeft = positions[3].Location;
 
+
+
+          if (tr.X < bl.X || tr.Y > bl.Y)
+          {
+              _frameBottomLeft = tr;
+              _frameTopRight = bl;
+
+          }
+
           Console.WriteLine("Calibration complete");
           Console.WriteLine("Bottom Right {0}. TopRight: {1}. BottomLeft {2}. TopLeft {3}", // <-- This is called a format string.
     _frameBottomRight,                        // <-- These are substitutions.
@@ -236,7 +246,7 @@ namespace CameraCapture
     _frameBottomLeft,
     _frameTopLeft);
 
-
+          _calibrated = true;
       }
 
 
@@ -306,7 +316,7 @@ namespace CameraCapture
 
 
           _rect.Location = new Point(0, 0);
-          _rect.Size = new Size(6, 6);
+          _rect.Size = new Size(5, 5);
           using (MemStorage store = new MemStorage())
               for (Contour<Point> contours1 = _dst.FindContours(Emgu.CV.CvEnum.CHAIN_APPROX_METHOD.CV_CHAIN_APPROX_NONE, Emgu.CV.CvEnum.RETR_TYPE.CV_RETR_TREE, store); contours1 != null; contours1 = contours1.HNext)
               {
@@ -314,7 +324,7 @@ namespace CameraCapture
                   if (newRect.Size.Height * newRect.Size.Width > _rect.Size.Height * _rect.Size.Width)
                   {
                       _rect = newRect;
-
+                     
 
 
                   }
@@ -326,7 +336,7 @@ namespace CameraCapture
        //   calibrateCornerPoints();
 
 
-          if (_rect.Height > 6 || _rect.Width>6 || _rect.Location.X !=0)
+          if (_rect.Height > 5 || _rect.Width>5 || _rect.Location.X !=0)
           {
               Point centerPoint = new Point();
               centerPoint.X = Convert.ToInt32(_rect.Location.X + _rect.Width / 2); //calculate mid point x
@@ -337,8 +347,19 @@ namespace CameraCapture
 
 
               _centerPoint = centerPoint;
-              _pointArray.Add(centerPoint);
-              _sizeArray.Add(_rect.Size);
+
+              bool xMin = centerPoint.X> _frameBottomLeft.X + 10 || centerPoint.X > _frameTopLeft.X + 10;
+              bool xMax = centerPoint.X < _frameBottomRight.X -10 || centerPoint.X <_frameTopRight.X - 10;
+
+              bool yMin = centerPoint.Y> _frameTopLeft.Y +10 || centerPoint.Y > _frameTopRight.Y + 10;
+              bool yMax = centerPoint.Y< _frameBottomLeft.Y - 10 || centerPoint.Y < _frameBottomRight.Y - 10;
+
+              if (xMin && xMax && yMin && yMax)
+              {
+
+                  _pointArray.Add(centerPoint);
+                  _sizeArray.Add(_rect.Size);
+              }
               dst2.Draw(_rect, new Gray(250.0), 1);
 
           }
@@ -381,8 +402,8 @@ namespace CameraCapture
 
           captureImageBox.Image = dst2;
 
-
-          checkPoints(dst2);
+          if(_calibrated)
+            checkPoints(dst2);
 
 
       }
@@ -422,8 +443,6 @@ namespace CameraCapture
                       indicator.X = indicator.X - 10;
                       indicator.Y = indicator.Y - 10;
 
-                      _form.hitLocation.Location = _collisionPoint;
-
 
 
                  
@@ -443,6 +462,7 @@ namespace CameraCapture
                      };
 
                   // Create a GraphicsPath object and add a polygon.
+                  
                   GraphicsPath myPath = new GraphicsPath();
                   myPath.AddPolygon(myArray);
                   Region region = new Region(myPath);
@@ -459,15 +479,24 @@ namespace CameraCapture
 
                   DPoint _originPoint = solver.getOrigin(l1, l2, r1, r2, origin, collisionPoint);
 
-                //  _collisionPoint.X = (int)_originPoint.x;
-                 // _collisionPoint.Y = (int)_originPoint.y;
+
+                  int flippedX = 790 - (int)_originPoint.x;
+
+                  _collisionPoint.X = flippedX;
+                  _collisionPoint.Y = (int)_originPoint.y;
+                  
+
+               //   normalizeCollision();
+
+                  _form.hitLocation.Location = _collisionPoint;
+
 
                   checkCollision();
 
               }
 
-              Rectangle rect432 = new Rectangle(_collisionPoint, new Size(20, 20));
-              dst2.Draw(rect432, new Gray(230.0), 1);
+            //  Rectangle rect432 = new Rectangle(_collisionPoint, new Size(20, 20));
+              //dst2.Draw(rect432, new Gray(230.0), 1);
 
           }
 
@@ -478,46 +507,62 @@ namespace CameraCapture
       private void normalizeCollision()
       {
 
-          int xDeltLeft = _frameTopLeft.X - _frameBottomLeft.X;
-          int xDeltRight = _frameTopRight.X - _frameBottomRight.X;
+          DPoint tl = new DPoint((int)_frameTopLeft.X, (int)_frameTopLeft.Y);
+          DPoint bl = new DPoint((int)_frameBottomLeft.X, (int)_frameBottomLeft.Y);
+          DPoint tr = new DPoint((int)_frameTopRight.X, (int)_frameTopRight.Y);
+          DPoint br = new DPoint((int)_frameBottomRight.X, (int)_frameBottomRight.Y);
+
+          DPoint col = new DPoint((int)_collisionPoint.X, (int)_collisionPoint.Y);
+         
+
+          double ySlopeLeft = (tl.x - bl.x) / (tl.y - bl.y);
+
+          double ySlopeRight = (tr.x - br.x) / (tr.y - br.y);
+
+          double leftX = ySlopeLeft * col.y + tl.x;
+
+          double rightX = ySlopeRight * col.y + tr.x;
+
+          double newX = rightX - leftX;
+
+          double xPercent = Math.Abs((col.x - leftX) / (newX));
+
+
+          double xSlopeTop = (tr.y - tl.y) / (tr.x - tl.x);
+
+          double xSlopeBottom = (br.y - bl.y) / (br.x - bl.x);
+
+          double topY = xSlopeTop * col.x + tl.y;
+
+          double bottomY = xSlopeBottom * col.x + bl.y;
+
+          double newY = bottomY - topY;
+
+          double yPercent = Math.Abs( (col.y - topY) / (newY));
 
 
 
-          int yDeltRight = _frameTopRight.Y - _frameBottomRight.Y;
+          Console.WriteLine("Old [ {0} , {1} ]", _collisionPoint.X, _collisionPoint.Y);
 
-          int yDeltLeft = _frameTopLeft.Y - _frameBottomLeft.Y;
+          double adjustedX = xPercent * 790.0;
+          double adjustedY = yPercent * 564.0;
+
+          _collisionPoint.X = (int)adjustedX;
+          _collisionPoint.Y = (int)adjustedY;
+
+          Console.WriteLine("Corrected [ {0} , {1} ]", _collisionPoint.X, _collisionPoint.Y); 
 
 
-          double xSlopeLeft = xDeltLeft / (_frameTopLeft.Y - _frameBottomLeft.Y);
 
 
-          double ySlopeLeft = yDeltLeft / (_frameTopLeft.X - _frameBottomLeft.X);
+
+
+
 
 
 
       }
        
-
-
-      private PointF computeIntersect(LineSegment2D a, LineSegment2D b)
-      {
-
-              int x1 = a.P1.X, y1 = a.P1.Y, x2 = a.P2.X, y2 = a.P2.Y;
-    int x3 = b.P1.X, y3 = b.P1.Y, x4 = b.P2.X, y4 = b.P2.Y;
-    float d = ((float)(x1-x2) * (y3-y4)) - ((y1-y2) * (x3-x4));
-    if (d != 0)
-    {
-        PointF pt = new PointF();
-        pt.X = ((x1 * y2 - y1 * x2) * (x3 - x4) - (x1 - x2) * (x3 * y4 - y3 * x4)) / d;
-        pt.Y = ((x1 * y2 - y1 * x2) * (y3 - y4) - (y1 - y2) * (x3 * y4 - y3 * x4)) / d;
-        return pt;
-    }
-    else
-    {
-        return new PointF(-1, -1);
-    }
-
-      }
 
       private void showVals(object sender, EventArgs e)
       {
@@ -580,10 +625,13 @@ namespace CameraCapture
 
       private void hitBird(int index)
       {
-
+          Console.WriteLine("Hit Bird");
           scoreBird(index);
           _deathArray.Add(_birdArray[index]);
           _birdArray.RemoveAt(index);
+
+          _birdFrame[0] = 0;
+          _birdImage[0] = 0;
           System.Media.SoundPlayer player = new System.Media.SoundPlayer(@"C:\\Users\\Andrew\\Downloads\\ducks\\Duck_Sound.wav");
           player.Play();
 
@@ -597,6 +645,32 @@ namespace CameraCapture
 
           _score = _score + 100;
       }
+       /*
+      private DPoint getPointOnLineWithX(int p1, int p2, int xVal)
+      {
+          DPoint point;
+
+            
+
+
+
+          return point;
+      }
+
+
+      private DPoint getPointOnLineWithY(int p1, int p2, int yVal)
+      {
+          DPoint point;
+
+
+
+
+
+          return point;
+      }
+
+       */
+
 
 
 
@@ -711,29 +785,43 @@ namespace CameraCapture
           if (_deathArray.Count > 0)
           {
               Point pos = _deathArray[0];
-              pos.Y = pos.Y + 10;
-              _deathArray[0] = pos;
 
 
-              if (pos.Y < 400)
+              if (_birdFrame[0] < 11)
               {
+                  _birdFrame[0]++;
 
-                  _form.imageControl.Image = (Image)_form.imageDead;
-
-                  _form.imageControl.Location = pos;
+                  _form.imageControl.Image = (Image)_form.imageOuch;
 
               }
               else
               {
 
-                  _deathArray.RemoveAt(0);
+                  _form.imageControl.Image = (Image)_form.imageDead;
 
-                  _birdArray.Add(new Point(10, 120));
-         
+                  pos.Y = pos.Y + 10;
+                  _deathArray[0] = pos;
+
+                  if (pos.Y < 400)
+                  {
 
 
+                      _form.imageControl.Location = pos;
+
+                  }
+                  else
+                  {
+
+                      _deathArray.RemoveAt(0);
+
+                      _birdArray.Add(new Point(10, 120));
+                      _birdFrame[0] = 0;
+                      _birdImage[0] = 0;
+
+
+
+                  }
               }
-
 
 
           }

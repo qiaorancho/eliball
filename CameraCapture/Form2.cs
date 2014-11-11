@@ -19,6 +19,9 @@ namespace CameraCapture
        public Bitmap image3 = new Bitmap("C:\\Users\\Andrew\\Downloads\\ducks\\Red3_Duck.png");
 
        public Bitmap imageDead = new Bitmap("C:\\Users\\Andrew\\Downloads\\ducks\\RedFall_Duck.png");
+
+       public Bitmap imageOuch = new Bitmap("C:\\Users\\Andrew\\Downloads\\ducks\\RedHit_Duck.png");
+
        public Bitmap hitImage = new Bitmap("C:\\Users\\Andrew\\Downloads\\ducks\\hit.png");
 
         public Form2()
@@ -42,12 +45,12 @@ namespace CameraCapture
             imageControl.Location = new Point(100, 100);
             //imageControl.Image.RotateFlip(RotateFlipType.RotateNoneFlipX);
 
-            hitLocation.Width = 20;
-            hitLocation.Height = 20;
+            hitLocation.Width = 10;
+            hitLocation.Height = 10;
             hitLocation.Image = (Image)hitImage;
 
             Controls.Add(imageControl);
-            Controls.Add(hitLocation);
+           Controls.Add(hitLocation);
         }
 
     }
