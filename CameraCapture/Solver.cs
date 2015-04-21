@@ -30,11 +30,15 @@ namespace CameraCapture
             DPoint xVantage = getInterSection(l1, l2, r1, r2);
             DPoint yVantage = getInterSection(l1, r1, l2, r2);
 
+
             xScale = getXFraction(l1, l2, r1, r2, origin, collisionPoint, xVantage, yVantage, 1, 0);
             yScale = getYFraction(l1, l2, r1, r2, origin, collisionPoint, xVantage, yVantage, 1, 0);
 
+
             origin.x = origin.x * xScale;
             origin.y = origin.y * yScale;
+
+
             return origin;
         }
 
@@ -59,6 +63,7 @@ namespace CameraCapture
             {
                 if (current.x - target.x <= 0)
                     fraction += (1.0 / (double)level);
+
                 return fraction;
             }
 

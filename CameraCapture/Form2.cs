@@ -14,7 +14,8 @@ namespace CameraCapture
        public PictureBox imageControl = new PictureBox();
        public PictureBox hitLocation = new PictureBox();
        public Bitmap image;
-       public Bitmap image1 = new Bitmap("C:\\Users\\Andrew\\Downloads\\ducks\\Red1_Duck.png");
+       
+        public Bitmap image1 = new Bitmap("C:\\Users\\Andrew\\Downloads\\ducks\\Red1_Duck.png");
        public Bitmap image2 = new Bitmap("C:\\Users\\Andrew\\Downloads\\ducks\\Red2_Duck.png");
        public Bitmap image3 = new Bitmap("C:\\Users\\Andrew\\Downloads\\ducks\\Red3_Duck.png");
 
@@ -23,7 +24,23 @@ namespace CameraCapture
        public Bitmap imageOuch = new Bitmap("C:\\Users\\Andrew\\Downloads\\ducks\\RedHit_Duck.png");
 
        public Bitmap hitImage = new Bitmap("C:\\Users\\Andrew\\Downloads\\ducks\\hit.png");
+       
+        /*
+       public Bitmap image1 = new Bitmap("C:\\Users\\Andrew\\Downloads\\face4.jpg");
 
+       public Bitmap image2 = new Bitmap("C:\\Users\\Andrew\\Downloads\\face3.jpg");
+
+       public Bitmap image3 = new Bitmap("C:\\Users\\Andrew\\Downloads\\face1.jpg");
+
+       public Bitmap imageDead = new Bitmap("C:\\Users\\Andrew\\Downloads\\face4.jpg");
+
+       public Bitmap imageOuch = new Bitmap("C:\\Users\\Andrew\\Downloads\\face1.jpg");
+
+       public Bitmap hitImage = new Bitmap("C:\\Users\\Andrew\\Downloads\\face1.jpg");
+
+        
+        */
+        
         public Form2()
         {
             InitializeComponent();

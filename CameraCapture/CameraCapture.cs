@@ -92,7 +92,6 @@ namespace CameraCapture
           _birdArray.Add(new Point(15, 100));
 
 
-
           /* original raquet
           _hueMax = 121;
           _hueMin=89;
@@ -251,10 +250,6 @@ namespace CameraCapture
 
 
 
-     
-
-
-
 
       private void ProcessFrame(object sender, EventArgs arg)
       {
@@ -311,8 +306,10 @@ namespace CameraCapture
           _dst = new Image<Gray, Byte>(src.Width, src.Height);
           _dst = filteredimg;
           Image<Gray, Byte> dst2 = new Image<Gray, Byte>(src.Width, src.Height);
-          StructuringElementEx element1 = new StructuringElementEx(2, 2, 1, 1, Emgu.CV.CvEnum.CV_ELEMENT_SHAPE.CV_SHAPE_ELLIPSE);
-          StructuringElementEx element2 = new StructuringElementEx(2, 2, 1, 1, Emgu.CV.CvEnum.CV_ELEMENT_SHAPE.CV_SHAPE_ELLIPSE);
+        //  StructuringElementEx element1 = new StructuringElementEx(2, 2, 1, 1, Emgu.CV.CvEnum.CV_ELEMENT_SHAPE.CV_SHAPE_ELLIPSE);
+          //StructuringElementEx element2 = new StructuringElementEx(2, 2, 1, 1, Emgu.CV.CvEnum.CV_ELEMENT_SHAPE.CV_SHAPE_ELLIPSE);
+
+          dst2 = _dst;
 
 
           _rect.Location = new Point(0, 0);
@@ -323,46 +320,36 @@ namespace CameraCapture
                   Rectangle newRect = CvInvoke.cvBoundingRect(contours1, 1);
                   if (newRect.Size.Height * newRect.Size.Width > _rect.Size.Height * _rect.Size.Width)
                   {
-                      _rect = newRect;
-                     
 
+                      Point centerPoint = new Point();
+                      centerPoint.X = Convert.ToInt32(_rect.Location.X + _rect.Width / 2); //calculate mid point x
+                      centerPoint.Y = Convert.ToInt32(_rect.Location.Y + _rect.Height / 2); //calculate mid point y
+
+                      _rect = newRect;
+
+
+
+                      if (withinBounds(centerPoint))
+                      {
+
+                          _centerPoint = centerPoint;
+
+
+                          _pointArray.Add(centerPoint);
+                          _sizeArray.Add(_rect.Size);
+
+
+
+                      }
 
                   }
               }
 
 
-          dst2 = _dst;
-
        //   calibrateCornerPoints();
 
 
-          if (_rect.Height > 5 || _rect.Width>5 || _rect.Location.X !=0)
-          {
-              Point centerPoint = new Point();
-              centerPoint.X = Convert.ToInt32(_rect.Location.X + _rect.Width / 2); //calculate mid point x
-              centerPoint.Y = Convert.ToInt32(_rect.Location.Y + _rect.Height / 2); //calculate mid point y
-
-             // System.Console.WriteLine(centerPoint);
-
-
-
-              _centerPoint = centerPoint;
-
-              bool xMin = centerPoint.X> _frameBottomLeft.X + 10 || centerPoint.X > _frameTopLeft.X + 10;
-              bool xMax = centerPoint.X < _frameBottomRight.X -10 || centerPoint.X <_frameTopRight.X - 10;
-
-              bool yMin = centerPoint.Y> _frameTopLeft.Y +10 || centerPoint.Y > _frameTopRight.Y + 10;
-              bool yMax = centerPoint.Y< _frameBottomLeft.Y - 10 || centerPoint.Y < _frameBottomRight.Y - 10;
-
-              if (xMin && xMax && yMin && yMax)
-              {
-
-                  _pointArray.Add(centerPoint);
-                  _sizeArray.Add(_rect.Size);
-              }
-              dst2.Draw(_rect, new Gray(250.0), 1);
-
-          }
+          dst2.Draw(_rect, new Gray(250.0), 1);
           if (_pointArray.Count > 50)
           {
               
@@ -504,7 +491,7 @@ namespace CameraCapture
 
       }
       
-      private void normalizeCollision()
+      private bool withinBounds(Point checkPoint)
       {
 
           DPoint tl = new DPoint((int)_frameTopLeft.X, (int)_frameTopLeft.Y);
@@ -512,55 +499,39 @@ namespace CameraCapture
           DPoint tr = new DPoint((int)_frameTopRight.X, (int)_frameTopRight.Y);
           DPoint br = new DPoint((int)_frameBottomRight.X, (int)_frameBottomRight.Y);
 
-          DPoint col = new DPoint((int)_collisionPoint.X, (int)_collisionPoint.Y);
+          DPoint point = new DPoint((int)checkPoint.X, (int)checkPoint.Y);
          
 
           double ySlopeLeft = (tl.x - bl.x) / (tl.y - bl.y);
 
           double ySlopeRight = (tr.x - br.x) / (tr.y - br.y);
 
-          double leftX = ySlopeLeft * col.y + tl.x;
+          double leftX = ySlopeLeft * point.y + tl.x;
+          if (leftX + 20 > point.x)
+              return false;
 
-          double rightX = ySlopeRight * col.y + tr.x;
+          double rightX = ySlopeRight * point.y + tr.x;
 
-          double newX = rightX - leftX;
-
-          double xPercent = Math.Abs((col.x - leftX) / (newX));
+          if (rightX - 20 < point.x)
+              return false;
 
 
           double xSlopeTop = (tr.y - tl.y) / (tr.x - tl.x);
 
           double xSlopeBottom = (br.y - bl.y) / (br.x - bl.x);
 
-          double topY = xSlopeTop * col.x + tl.y;
+          double topY = xSlopeTop * point.x + tl.y;
 
-          double bottomY = xSlopeBottom * col.x + bl.y;
+          if (topY + 20 > point.y)
+              return false;
 
-          double newY = bottomY - topY;
+          double bottomY = xSlopeBottom * point.x + bl.y;
 
-          double yPercent = Math.Abs( (col.y - topY) / (newY));
-
-
-
-          Console.WriteLine("Old [ {0} , {1} ]", _collisionPoint.X, _collisionPoint.Y);
-
-          double adjustedX = xPercent * 790.0;
-          double adjustedY = yPercent * 564.0;
-
-          _collisionPoint.X = (int)adjustedX;
-          _collisionPoint.Y = (int)adjustedY;
-
-          Console.WriteLine("Corrected [ {0} , {1} ]", _collisionPoint.X, _collisionPoint.Y); 
+          if (bottomY - 20 < point.y)
+              return false;
 
 
-
-
-
-
-
-
-
-
+          return true;
       }
        
 
@@ -645,19 +616,21 @@ namespace CameraCapture
 
           _score = _score + 100;
       }
-       /*
-      private DPoint getPointOnLineWithX(int p1, int p2, int xVal)
-      {
-          DPoint point;
+
+      /*
+     private DPoint getPointOnLineWithX(int p1, int p2, int xVal)
+     {
+         DPoint point;
 
             
 
 
 
-          return point;
-      }
+         return point;
+     }
+      */
 
-
+       /*
       private DPoint getPointOnLineWithY(int p1, int p2, int yVal)
       {
           DPoint point;
@@ -669,11 +642,8 @@ namespace CameraCapture
           return point;
       }
 
+
        */
-
-
-
-
 
       private void plusHueMaxClick(object sender, EventArgs e)
       {
